@@ -3,7 +3,7 @@
 Tools for scraping proxy list
 ## Features
 <pre>
-- Scrape from 4 api
+- Scrape from 5 api
 - Maybe later will upate with proxy checker
 </pre>
 <br>
