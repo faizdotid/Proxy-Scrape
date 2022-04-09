@@ -20,7 +20,7 @@ class Scrape:
     def make_request(self):
         for u in self.url:
             try:
-                resp = session.get(u, timeout=10)
+                resp = session.get(u, timeout=70)
                 resp.raise_for_status()
                 self.parse_body(resp.text)
             except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
@@ -81,7 +81,7 @@ class Checker(object):
             "https": proxy,
         }
         try:
-            with requests.get("https://www.google.com", proxies=fproxy, timeout=70):
+            with requests.get("https://www.google.com", proxies=fproxy, timeout=10):
                 print(proxy, "is working")
                 with open('live_proxies.txt', 'a') as f:
                     f.write(proxy+'\n')
