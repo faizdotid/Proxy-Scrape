@@ -1,6 +1,7 @@
 from secrets import choice
 import requests
 import re
+from concurrent.futures import ThreadPoolExecutor
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'})
@@ -69,6 +70,54 @@ class Main(Scrape):
             self.make_request()
             print(self)
 
+class Checker(object):
+    
+    def __init__(self):
+        self.proxy = []
+    
+    def check(self, proxy):
+        fproxy = {
+            "http": proxy,
+            "https": proxy,
+        }
+        try:
+            with requests.get("https://www.google.com", proxies=fproxy, timeout=70):
+                print(proxy, "is working")
+                with open('live_proxies.txt', 'a') as f:
+                    f.write(proxy+'\n')
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            print(proxy, "is not working")
+            with open('dead_proxies.txt', 'a') as f:
+                f.write(proxy+'\n')
+
+    def main(self):
+        namefile = input("\n\nFile ? ")
+        try:
+            with open(namefile, 'r') as f:
+                for line in f:
+                    self.proxy.append(line.strip())
+            with ThreadPoolExecutor(max_workers=50) as executor:
+                executor.map(self.check, self.proxy)
+        except FileNotFoundError:
+            print("File not found")
+
+def choice_proxy_option():
+    print("""
+
+1. Proxy-List.Download
+2. Github
+3. Free-Proxy-List.net
+4. Spys.me
+5. Proxyscrape
+6. All
+""")
+    choice = input("Choice ?  ")
+    if choice == "6":
+        Main().run()
+    elif re.search(r'^[1-5]$', choice):
+        Main(choice).run()
+    else:
+        print("Invalid choice")
 def main():
     print("""
 
@@ -80,21 +129,16 @@ def main():
 ██║░░░░░██║░░██║╚█████╔╝██╔╝╚██╗░░░██║░░░░░░░░░██████╔╝╚█████╔╝██║░░██║██║░░██║██║░░░░░███████╗
 ╚═╝░░░░░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░░░░░░░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░░░╚══════╝
 
-
-1. Proxy-List.Download
-2. Github
-3. Free-Proxy-List.net
-4. Spys.me
-5. Proxyscrape
-6. All
+1. Scrape Proxies
+2. Check Proxies
 """)
-    choice = input("Enter your choice: ")
-    if choice == "6":
-        Main().run()
-    elif re.search(r'^[1-5]$', choice):
-        Main(choice).run()
+    option = input("Option ? ")
+    if option == "1":
+        choice_proxy_option()
+    elif option == "2":
+        Checker().main()
     else:
-        print("Invalid choice")
+        print("Invalid option")
 
 if __name__ == "__main__":
     main()
