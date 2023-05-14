@@ -1,10 +1,9 @@
-from secrets import choice
 import requests
 import re
 from concurrent.futures import ThreadPoolExecutor
 
 session = requests.Session()
-session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'})
+session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36'})
 
 def split_only_domain(url):
     domain = url[0].split("/")[2]
@@ -40,7 +39,7 @@ class Scrape:
     def __str__(self):
         redup = set(self.proxies)
         with open('proxies.txt', 'a') as f:
-                f.write('\n'.join(redup)+'\n')
+            f.write('\n'.join(redup)+'\n')
         return "Successfully scraped {} proxies from {}".format(str(len(redup)), split_only_domain(self.url))
 
 
@@ -58,7 +57,7 @@ class Main(Scrape):
         }
 
     def run(self):
-        if self.option == "All":    
+        if self.option == "All":
             print("Maybe it will take a few minutes to scrape all proxies")
             for k, v in self.config_proxy.items():
                 Scrape.__init__(self, v, self.default_regex)
@@ -71,10 +70,10 @@ class Main(Scrape):
             print(self)
 
 class Checker(object):
-    
+
     def __init__(self):
         self.proxy = []
-    
+
     def check(self, proxy):
         fproxy = {
             "http": proxy,
@@ -118,9 +117,9 @@ def choice_proxy_option():
         Main(choice).run()
     else:
         print("Invalid choice")
+
 def main():
     print("""
-
 
 ██████╗░██████╗░░█████╗░██╗░░██╗██╗░░░██╗░░░░░░░██████╗░█████╗░██████╗░░█████╗░██████╗░███████╗
 ██╔══██╗██╔══██╗██╔══██╗╚██╗██╔╝╚██╗░██╔╝░░░░░░██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝
